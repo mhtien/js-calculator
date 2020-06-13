@@ -1,0 +1,43 @@
+/* border for visual aid */
+* {
+    border: 1px green solid;
+}
+
+/* general text alignment to entire body */
+body {
+    text-align: center;
+}
+
+/* buttons general positioning; */
+button {
+    height: 50px;
+    width: 25%;
+}
+
+/* calculator display and buttons container */
+#calculator {
+    max-width: 200px;
+    margin: 0 auto;
+}
+
+/* display container */
+#display {
+    height:4rem;
+    background-color: pink;
+}
+
+/* clear button width */
+#clear {
+    width: 75%;
+}
+
+/* equals button width */
+#equals {
+    width: 50%;
+}
+
+/* removes all padding from div containers */
+.row-btns {
+    font-size: 0;
+}
+
