@@ -15,7 +15,7 @@ const pressedBtnDisplay = document.getElementById("pressed-btn");
 // variable for pressed button display
 let btnDisplay = "";
 
-let symbolArray = ["+","-","x","/"];
+const symbolArray = ["+","-","x","/"];
 
 function showWhatIsPressed(event) {
     // variable for the button pressed
@@ -29,19 +29,13 @@ function showWhatIsPressed(event) {
     }
 
     // if statement for if any of sum symbols pressed
-    if (target === "+"
-        || target === "-"
-        || target === "/"
-        || target === "x") {
+    if (symbolArray.includes(target)) {
         // if statement to see if new symbol is pressed in leui of old symbol
         if (previousTarget === "=") {
             totalArray.push(target);
             btnDisplay = target;
             totalSum =0;
-        } else if (previousTarget === "+"
-            || previousTarget === "-"
-            || previousTarget === "/"
-            || previousTarget === "x") {
+        } else if (symbolArray.includes(previousTarget)) {
             totalArray.splice(totalArray.length - 1, 1);
             btnDisplay = target;
             totalArray.push(btnDisplay)
@@ -58,10 +52,7 @@ function showWhatIsPressed(event) {
 
     // if statement for when numbers are pressed
     if (target <= 9 && target >= 0) {
-        if (btnDisplay === "+"
-            || btnDisplay === "-"
-            || btnDisplay === "/"
-            || btnDisplay === "x") {
+        if (symbolArray.includes(btnDisplay)) {
             btnDisplay = target;
         } else if (previousTarget === "=") {
             btnDisplay = target;
