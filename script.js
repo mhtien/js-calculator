@@ -5,8 +5,8 @@ let btnArray = [...calculatorBtns];
 
 // creating eventlisteners to all buttons
 for (let i = 0; i < btnArray.length; i++) {
-    btnArray[i].addEventListener("click", showWhatIsPressed)
-    // btnArray[i].addEventListener("click", showCalculation)
+    btnArray[i].addEventListener("click", showWhatIsPressed);
+    btnArray[i].addEventListener("click", showCalculation);
 }
 
 // target the pressing button display
@@ -15,7 +15,7 @@ const pressedBtnDisplay = document.getElementById("pressed-btn");
 // variable for pressed button display
 let btnDisplay = "";
 
-const symbolArray = ["+","-","x","/"];
+const symbolArray = ["+", "-", "x", "/"];
 
 function showWhatIsPressed(event) {
     // variable for the button pressed
@@ -34,7 +34,7 @@ function showWhatIsPressed(event) {
         if (previousTarget === "=") {
             totalArray.push(target);
             btnDisplay = target;
-            totalSum =0;
+            totalSum = 0;
         } else if (symbolArray.includes(previousTarget)) {
             totalArray.splice(totalArray.length - 1, 1);
             btnDisplay = target;
@@ -64,7 +64,7 @@ function showWhatIsPressed(event) {
 
     }
     // if statement when equals sign is pressedBtnDisplay, to perform and show calculation
-    if (target === "=") {
+    if (target === "=" && previousTarget !== "=") {
         totalArray.push(btnDisplay);
         calculateTotal(totalArray);
         btnDisplay = totalSum;
@@ -81,54 +81,23 @@ const calculationDisplay = document.getElementById("calculation");
 let calcDisplay = "";
 
 
-// function showCalculation(event) {
-//     let targetText = event.target.innerText;
+function showCalculation(event) {
+    let target = event.target.innerText;
 
-//     if (targetText === "AC") {
-//         calcDisplay = "";
-//     }
+    if (target === "AC") {
+        calcDisplay = btnDisplay;
+    }
 
-//     if (previousTarget === "=") {
-//         if (targetText === "+"
-//             || targetText === "-"
-//             || targetText === "/"
-//             || targetText === "x") {
-//             calcDisplay = totalSum;
-//             totalArray = [totalSum];
-//         } else {
-//             calcDisplay = "";
-//             totalSum = 0;
-//             totalArray = [];
-//         }
-//     }
+    if (symbolArray.includes(target)) {
+        if (previousTarget === "=" ) {
+            calcDisplay = calcDisplay + "=" + btnDisplay;
+        }
+    }
+    
 
-//     if (targetText === "=") {
-//         calcDisplay = calcDisplay + targetText + totalSum;
-//     }
+    calculationDisplay.innerHTML = calcDisplay;
 
-//     if ((targetText <= 9 && targetText >= 0) || targetText === ".") {
-//         calcDisplay = calcDisplay + targetText;
-//     }
-
-//     if (targetText === "+"
-//         || targetText === "-"
-//         || targetText === "/"
-//         || targetText === "x") {
-//         if (previousTarget === "+"
-//             || previousTarget === "-"
-//             || previousTarget === "/"
-//             || previousTarget === "x") {
-//             calcDisplay = calcDisplay.substring(0, calcDisplay.length - 1);
-//             calcDisplay += targetText;
-//         } else {
-//             calcDisplay = calcDisplay + targetText;
-//         }
-//     }
-//     calculationDisplay.innerHTML = calcDisplay;
-
-
-
-// }
+}
 
 // total sum
 let totalSum = 0;
@@ -141,47 +110,64 @@ let totalArray = [];
 // calculating the sum
 
 function calculateTotal(array) {
-    const filterNumbers = array.filter(val => {
-        if (Number(val)) {
-            return val;
-        }
-    })
 
-    const filterSymbols = array.filter(val => {
-        if (val === "+" || val === "-" || val === "/" || val === "x") {
-            return val;
+    if (array.length === 1) {
+        return totalSum = array[0];
+    }
+    do {
+        if (array.includes("x") && array.includes("/")) {
+            if (array.indexOf("x") < array.indexOf("/")) {
+                let pIndex = array.indexOf("x");
+                let mSum = array[pIndex - 1] * array[pIndex + 1];
+                array.splice(pIndex - 1, 3, mSum);
+            } else {
+                let pIndex = array.indexOf("/");
+                let mSum = array[pIndex - 1] / array[pIndex + 1];
+                array.splice(pIndex - 1, 3, mSum);
+            }
         }
-    })
 
-    let sum = 0;
+        if (array.includes("x") || array.includes("/")) {
+            if (array.indexOf("x") > 0 && array.indexOf("/") < 0) {
+                let priorityIndex = array.indexOf("x");
+                let miniSum = array[priorityIndex - 1] * array[priorityIndex + 1];
+                array.splice(priorityIndex - 1, 3, miniSum);
+            } else if (array.indexOf("x") < 0 && array.indexOf("/") > 0) {
+                let priorityIndex = array.indexOf("/");
+                let miniSum = array[priorityIndex - 1] / array[priorityIndex + 1];
+                array.splice(priorityIndex - 1, 3, miniSum);
+            }
+        }
+    } while (array.includes("x") || array.includes("/"));
 
-    for (let i = 0; i < filterNumbers.length; i++) {
-        if (filterSymbols.length === 0) {
-            sum = filterNumbers[0];
+    do {
+        if (array.includes("+") && array.includes("-")) {
+            if (array.indexOf("+") < array.indexOf("-")) {
+                let pIndex = array.indexOf("+");
+                let mSum = Number(array[pIndex - 1]) + Number(array[pIndex + 1]);
+                array.splice(pIndex - 1, 3, mSum);
+            } else {
+                let pIndex = array.indexOf("-");
+                let mSum = array[pIndex - 1] - array[pIndex + 1];
+                array.splice(pIndex - 1, 3, mSum);
+            }
         }
-        if (i === 0) {
-            sum = filterNumbers[i];
-        }
-        if (filterSymbols[i] === "+") {
-            sum = Number(sum) + Number(filterNumbers[i + 1]);
-        }
-        if (filterSymbols[i] === "-") {
-            sum = sum - filterNumbers[i + 1];
 
-        }
-        if (filterSymbols[i] === "/") {
-            sum = sum / filterNumbers[i + 1];
-
-        }
-        if (filterSymbols[i] === "x") {
-            sum = sum * filterNumbers[i + 1];
+        if (array.includes("+") || array.includes("-")) {
+            if (array.indexOf("+") > 0 && array.indexOf("-") < 0) {
+                let priorityIndex = array.indexOf("+");
+                let miniSum = Number(array[priorityIndex - 1]) + Number(array[priorityIndex + 1]);
+                array.splice(priorityIndex - 1, 3, miniSum);
+            } else if (array.indexOf("+") < 0 && array.indexOf("-") > 0) {
+                let priorityIndex = array.indexOf("-");
+                let miniSum = array[priorityIndex - 1] - array[priorityIndex + 1];
+                array.splice(priorityIndex - 1, 3, miniSum);
+            }
         }
     }
-    console.log("totalArray", array);
-    console.log("filterNum", filterNumbers);
-    console.log("filterSym", filterSymbols);
+    while (array.includes("+") || array.includes("-"))
 
-    totalSum += sum;
+    totalSum = array.join("");
     totalArray = [];
-
+    
 }
