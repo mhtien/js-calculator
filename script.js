@@ -24,10 +24,11 @@ let calcDisplay = "";
 const symbolArray = ["+", "-", "x", "/"];
 
 function showInput(event) {
-    
+
+
     // variable for the button pressed
     let target = event.target.innerText;
-
+    console.log(target);
     // if statement for clear button pressed
     if (target === "AC") {
         btnDisplay = "0";
@@ -44,11 +45,14 @@ function showInput(event) {
             btnDisplay = target;
             calcDisplay = totalSum + target;
             totalSum = 0;
-        } else if (symbolArray.includes(previousTarget)) {
+        } else if (symbolArray.includes(previousTarget) && target !== "-") {
             totalArray.splice(totalArray.length - 1, 1);
             btnDisplay = target;
-            calcDisplay = calcDisplay.substr(0,calcDisplay.length-1) + target;
+            calcDisplay = calcDisplay.substr(0, calcDisplay.length - 1) + target;
             totalArray.push(btnDisplay)
+        } else if (symbolArray.includes(previousTarget) && target === "-") {
+            btnDisplay = target;
+            calcDisplay = calcDisplay + target;
         } else {
             totalArray.push(btnDisplay);
             btnDisplay = target;
@@ -62,77 +66,53 @@ function showInput(event) {
         calcDisplay = calcDisplay + target;
     }
 
+    if (target === "." && previousTarget === "=") {
+        btnDisplay = target;
+        calcDisplay = target;
+        totalSum = 0;
+        totalArray = [];
+    }
+
     // if statement for when numbers are pressed
     if (target <= 9 && target >= 0) {
-        if (symbolArray.includes(btnDisplay)) {
+        if (symbolArray.includes(btnDisplay) && btnDisplay !== "-") {
             btnDisplay = target;
+            calcDisplay = calcDisplay + target;
+        } else if (symbolArray.includes([previousTarget]) && btnDisplay === "-") {
+            btnDisplay = btnDisplay + target;
             calcDisplay = calcDisplay + target;
         } else if (previousTarget === "=") {
             btnDisplay = target;
             calcDisplay = target;
             totalSum = 0;
             totalArray = [];
+        } else if (btnDisplay === "0") {
+            btnDisplay = target;
+            calcDisplay = calcDisplay.substr(0, calcDisplay.length - 1) + target;
         } else {
             btnDisplay = btnDisplay + target;
             calcDisplay = calcDisplay + target;
         }
 
     }
-    // if statement when equals sign is pressedBtnDisplay, to perform and show calculation
+    // if statement when equals sign is pressed, to perform and show calculation
     if (target === "=" && previousTarget !== "=") {
+        if (symbolArray.includes(previousTarget)) {
+            totalArray.splice(totalArray.length - 1, 1);
+            calcDisplay = calcDisplay.substr(0, calcDisplay.length - 1);
+        }
         totalArray.push(btnDisplay);
         calculateTotal(totalArray);
         btnDisplay = totalSum;
         calcDisplay = calcDisplay + target + totalSum;
         totalArray.push(totalSum);
     }
-    pressedBtnDisplay.innerHTML = btnDisplay;
+    pressedBtnDisplay.innerText = btnDisplay;
     calculationDisplay.innerText = calcDisplay;
     // changes the value of the previous target variable  
     previousTarget = target;
 }
 
-
-
-// function showCalculation(event) {
-//     console.log("1",previousTarget);
-//     let target = event.target.innerText;
-
-//     if (target === "AC") {
-//         calcDisplay = "";
-//     }
-
-//     if (symbolArray.includes(target)) {
-//         if (previousTarget === "=") {
-//             calcDisplay = calcDisplay + target;
-//         }
-        
-//         if (symbolArray.includes(previousTarget)) {
-//             calcDisplay = calcDisplay.substr(0,calcDisplay.length-1);
-//         } 
-//             // calcDisplay = calcDisplay + target;
-//     }
-
-//     if (target === "." && btnDisplay.includes(".") === false) {
-//         calcDisplay = calcDisplay + target;
-//     }
-
-//     if (target <=9 && target >=0) {
-//         if (previousTarget === "=") {
-//             calcDisplay = target;
-//         } else {
-//             calcDisplay = calcDisplay + target;
-//         }
-//     }
-
-//     if (target === "=" && previousTarget !== "=") {
-//         calcDisplay = calcDisplay + target + btnDisplay;
-//     }
-
-//     calculationDisplay.innerText = calcDisplay;
-//     console.log("2",previousTarget);
-
-// }
 
 // total sum
 let totalSum = 0;
@@ -145,10 +125,12 @@ let totalArray = [];
 // calculating the sum
 
 function calculateTotal(array) {
+    // do loop for prioritising multiple and divide
 
-    if (array.length === 1) {
-        return totalSum = array[0];
+    if (symbolArray.includes(array[array.length - 1])) {
+        array.pop();
     }
+
     do {
         if (array.includes("x") && array.includes("/")) {
             if (array.indexOf("x") < array.indexOf("/")) {
@@ -201,6 +183,9 @@ function calculateTotal(array) {
         }
     }
     while (array.includes("+") || array.includes("-"))
+
+    let roundNumber = Number(array[0].toFixed(4));
+    array[0] = roundNumber;
 
     totalSum = array.join("");
     totalArray = [];
