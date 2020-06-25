@@ -191,3 +191,23 @@ function calculateTotal(array) {
     totalArray = [];
 
 }
+
+// key press function to initialise a click of the same button
+
+function pressKey (event) {
+    // for the AC button
+    if (event.key === "a") {
+        // because we know clear is index 0, using keypress for 'a'
+        btnArray[0].click();
+    }
+    // for loop to find the innerText of each button to match one with event.key value
+        for (let i=0;i<btnArray.length; i++) {
+            // if statement to determine match, and initialise a click of the button
+            if (btnArray[i].innerText === event.key) {
+            btnArray[i].click()
+            }
+        }
+    }
+
+    // event listener for any key presses
+document.addEventListener("keypress", pressKey);
