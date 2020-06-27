@@ -1,30 +1,65 @@
 /* border for visual aid */
-* {
+/* * {
     border: 1px green solid;
+} */
+
+html {
+    font-family: Arial, Helvetica, sans-serif;
+
 }
 
-/* general text alignment to entire body */
-body {
-    text-align: center;
-}
-
-/* buttons general positioning; */
-button {
-    height: 50px;
-    width: 25%;
-}
-
-/* calculator display and buttons container */
 #calculator {
-    max-width: 200px;
+    max-width: 20rem;
+    min-width: 20rem;
     margin: 0 auto;
+}
+
+
+/* general text alignment to h1 */
+h1 {
+    text-align: center;
 }
 
 /* display container */
 #display {
-    height:4rem;
-    background-color: pink;
+    /* height:4rem; */
+    background-color: darkgray;
+    width: 100%;
+    box-sizing: border-box;
+    border: 0.2rem solid white;
+    text-align: right;
+    padding: 0.5rem 0.2rem;
 }
+
+/* buttons general positioning; */
+button {
+    display: inline-block;
+    height: 5rem;
+    width: 5rem;
+    font-size: 1.5rem;
+    box-sizing: border-box;
+    border: 0.2rem solid white;
+}
+
+
+#calculator-buttons {
+    font-size: 0;
+}
+
+
+
+#pressed-btn {
+    height: 2rem;
+    font-size: 2rem;
+    color: white;
+}
+
+#calculation {
+    height: 1rem;
+    font-size: 1rem;
+    color: white;
+}
+
 
 /* clear button width */
 #clear {
@@ -35,9 +70,3 @@ button {
 #equals {
     width: 50%;
 }
-
-/* removes all padding from div containers */
-.row-btns {
-    font-size: 0;
-}
-
