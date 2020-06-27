@@ -6,7 +6,6 @@ let btnArray = [...calculatorBtns];
 // creating eventlisteners to all buttons
 for (let i = 0; i < btnArray.length; i++) {
     btnArray[i].addEventListener("click", showInput);
-    btnArray[i].addEventListener("click", showInput);
 }
 
 // target the pressing button display
@@ -23,7 +22,10 @@ let calcDisplay = "";
 
 const symbolArray = ["+", "-", "x", "/"];
 
+let isMinusNumber = false;
+
 function showInput(event) {
+
 
 
     // variable for the button pressed
@@ -36,7 +38,7 @@ function showInput(event) {
         totalSum = 0;
         totalArray = [];
     }
-
+    console.log("1", isMinusNumber);
     // if statement for if any of sum symbols pressed
     if (symbolArray.includes(target)) {
         // if statement to see if new symbol is pressed in leui of old symbol
@@ -53,6 +55,7 @@ function showInput(event) {
         } else if (symbolArray.includes(previousTarget) && target === "-") {
             btnDisplay = target;
             calcDisplay = calcDisplay + target;
+            isMinusNumber = true;
         } else {
             totalArray.push(btnDisplay);
             btnDisplay = target;
@@ -60,6 +63,8 @@ function showInput(event) {
             totalArray.push(btnDisplay)
         }
     }
+
+    console.log("2", isMinusNumber);
     // if statement for when decimal is pressed and the number doesnt have a decimal already
     if (target === "." && pressedBtnDisplay.innerText.includes(".") === false) {
         btnDisplay = btnDisplay + target;
@@ -78,9 +83,15 @@ function showInput(event) {
         if (symbolArray.includes(btnDisplay) && btnDisplay !== "-") {
             btnDisplay = target;
             calcDisplay = calcDisplay + target;
-        } else if (symbolArray.includes([previousTarget]) && btnDisplay === "-") {
-            btnDisplay = btnDisplay + target;
+        } else if (symbolArray.includes(btnDisplay) && btnDisplay === "-") {
+            if (isMinusNumber === true) {
+                btnDisplay = btnDisplay + target;
+                calcDisplay = calcDisplay + target;
+                isMinusNumber = false;
+            } else {
+                btnDisplay = target;
             calcDisplay = calcDisplay + target;
+            }
         } else if (previousTarget === "=") {
             btnDisplay = target;
             calcDisplay = target;
@@ -97,10 +108,12 @@ function showInput(event) {
     }
     // if statement when equals sign is pressed, to perform and show calculation
     if (target === "=" && previousTarget !== "=") {
+
         if (symbolArray.includes(previousTarget)) {
             totalArray.splice(totalArray.length - 1, 1);
             calcDisplay = calcDisplay.substr(0, calcDisplay.length - 1);
         }
+
         if (!symbolArray.includes(previousTarget)) {
             totalArray.push(btnDisplay);
         }
@@ -129,7 +142,7 @@ let totalArray = [];
 
 function calculateTotal(array) {
     // do loop for prioritising multiple and divide
-    
+    console.log("array first", array);
     if (array.length === 1) {
         totalSum = array.join("");
         totalArray = [];
@@ -166,6 +179,8 @@ function calculateTotal(array) {
         }
     } while (array.includes("x") || array.includes("/"));
 
+    console.log("array second", array);
+
     do {
         if (array.includes("+") && array.includes("-")) {
             if (array.indexOf("+") < array.indexOf("-")) {
@@ -193,8 +208,12 @@ function calculateTotal(array) {
     }
     while (array.includes("+") || array.includes("-"))
 
+    console.log("array third", array);
+
     let roundNumber = Number(array[0].toFixed(4));
     array[0] = roundNumber;
+
+    console.log("array fourth", array);
 
 
     totalSum = array.join("");
