@@ -101,7 +101,10 @@ function showInput(event) {
             totalArray.splice(totalArray.length - 1, 1);
             calcDisplay = calcDisplay.substr(0, calcDisplay.length - 1);
         }
-        totalArray.push(btnDisplay);
+        if (!symbolArray.includes(previousTarget)) {
+            totalArray.push(btnDisplay);
+        }
+
         calculateTotal(totalArray);
         btnDisplay = totalSum;
         calcDisplay = calcDisplay + target + totalSum;
@@ -126,6 +129,12 @@ let totalArray = [];
 
 function calculateTotal(array) {
     // do loop for prioritising multiple and divide
+    
+    if (array.length === 1) {
+        totalSum = array.join("");
+        totalArray = [];
+        return;
+    }
 
     if (symbolArray.includes(array[array.length - 1])) {
         array.pop();
@@ -187,6 +196,7 @@ function calculateTotal(array) {
     let roundNumber = Number(array[0].toFixed(4));
     array[0] = roundNumber;
 
+
     totalSum = array.join("");
     totalArray = [];
 
@@ -206,6 +216,7 @@ function pressKey(event) {
     }
 
     if (event.key === "Enter") {
+        event.preventDefault();
         btnArray[16].click();
     }
     // for loop to find the innerText of each button to match one with event.key value
