@@ -194,20 +194,37 @@ function calculateTotal(array) {
 
 // key press function to initialise a click of the same button
 
-function pressKey (event) {
+function pressKey(event) {
     // for the AC button
     if (event.key === "a") {
         // because we know clear is index 0, using keypress for 'a'
         btnArray[0].click();
     }
-    // for loop to find the innerText of each button to match one with event.key value
-        for (let i=0;i<btnArray.length; i++) {
-            // if statement to determine match, and initialise a click of the button
-            if (btnArray[i].innerText === event.key) {
-            btnArray[i].click()
-            }
-        }
+
+    if (event.key === "x" || event.key === "*") {
+        btnArray[5].click();
     }
 
-    // event listener for any key presses
+    if (event.key === "Enter") {
+        btnArray[16].click();
+    }
+    // for loop to find the innerText of each button to match one with event.key value
+    for (let i = 0; i < btnArray.length; i++) {
+        // if statement to determine match, and initialise a click of the button
+
+        if (btnArray[i].innerText === event.key) {
+            btnArray[i].click()
+        }
+    }
+}
+
+function keyDown(event) {
+    if (event.key === "Backspace") {
+        btnArray[0].click();
+    }
+}
+
+// event listener for any key presses
 document.addEventListener("keypress", pressKey);
+// event listener for any key presses
+document.addEventListener("keydown", keyDown);
