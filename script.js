@@ -9,6 +9,11 @@ for (let i = 0; i < btnArray.length; i++) {
     btnArray[i].addEventListener("click", showInput);
 }
 
+// event listener for any key presses
+document.addEventListener("keypress", pressKey);
+// event listener for any key presses
+document.addEventListener("keydown", keyDown);
+
 // target the pressing button display
 const pressedBtnDisplay = document.getElementById("pressed-btn");
 
@@ -24,120 +29,149 @@ let calcDisplay = "";
 // array for operators prioritisng multiply and divide
 const operatorsArray = ["x", "/", "+", "-"];
 
+
+// setting initial variables
+let totalSum = 0;
+let previousTarget = "";
+let totalArray = [];
+
+
 let isMinusNumber = false;
 
 //function for showing both the 'button' display and the calculation display
 function showInput(event) {
-
     // variable for the button pressed
     let target = event.target.innerText;
 
     // if statement for clear button pressed
     if (target === "AC") {
-        btnDisplay = "0";
-        calcDisplay = "";
-        totalSum = 0;
-        totalArray = [];
+        pressClear(target);
     }
 
-    // if statement for if any of sum symbols pressed
+    // if statement for any operators pressed
     if (operatorsArray.includes(target)) {
-        // if statement to see if new symbol is pressed in leui of old symbol
-        if (previousTarget === "=") {
-            totalArray.push(target);
-            btnDisplay = target;
-            calcDisplay = totalSum + target;
-            totalSum = 0;
-        } else if (operatorsArray.includes(previousTarget) && target !== "-") {
-            totalArray.splice(totalArray.length - 1, 1);
-            btnDisplay = target;
-            calcDisplay = calcDisplay.substr(0, calcDisplay.length - 1) + target;
-            totalArray.push(btnDisplay)
-        } else if (operatorsArray.includes(previousTarget) && target === "-") {
-            btnDisplay = target;
-            calcDisplay = calcDisplay + target;
-            isMinusNumber = true;
-        } else {
-            totalArray.push(btnDisplay);
-            btnDisplay = target;
-            calcDisplay = calcDisplay + target;
-            totalArray.push(btnDisplay)
-        }
+        pressOperators(target);
     }
 
+    if (target === ".") {
+        pressDecimal(target);
+    }
+
+    // if statement for when numbers are pressed
+    if (target <= 9 && target >= 0) {
+        pressNumber(target);
+    }
+
+    // if statement when equals sign is pressed, to perform and show calculation
+    if (target === "=" && previousTarget !== "=") {
+        pressEquals(target);
+    }
+
+    //displaying both buttons pressed, and calculation
+    pressedBtnDisplay.innerText = btnDisplay;
+    calculationDisplay.innerText = calcDisplay;
+
+    // changes the value of the previous target variable  
+    previousTarget = target;
+}
+
+function pressClear(target) {
+    btnDisplay = "0";
+    calcDisplay = "";
+    totalSum = 0;
+    totalArray = [];
+}
+
+function pressOperators(target) {
+    if (previousTarget === "=") {
+        btnDisplay = target;
+        calcDisplay = totalSum + target;
+        totalSum = 0;
+        totalArray.push(btnDisplay);
+
+    } else if (operatorsArray.includes(previousTarget) && target !== "-") {
+        totalArray.splice(totalArray.length - 1, 1);
+        btnDisplay = target;
+        calcDisplay = calcDisplay.substr(0, calcDisplay.length - 1) + target;
+        totalArray.push(btnDisplay)
+
+    } else if (operatorsArray.includes(previousTarget) && target === "-") {
+        btnDisplay = target;
+        calcDisplay = calcDisplay + target;
+        isMinusNumber = true;
+    } else {
+        totalArray.push(btnDisplay);
+        btnDisplay = target;
+        calcDisplay = calcDisplay + target;
+        totalArray.push(btnDisplay)
+    }
+}
+
+
+function pressDecimal(target) {
     // if statement for when decimal is pressed and the number doesnt have a decimal already
-    if (target === "." && pressedBtnDisplay.innerText.includes(".") === false) {
+    if (pressedBtnDisplay.innerText.includes(".") === false) {
         btnDisplay = btnDisplay + target;
         calcDisplay = calcDisplay + target;
     }
 
-    if (target === "." && previousTarget === "=") {
+    if (previousTarget === "=") {
         btnDisplay = target;
         calcDisplay = target;
         totalSum = 0;
         totalArray = [];
     }
-
-    // if statement for when numbers are pressed
-    if (target <= 9 && target >= 0) {
-        if (operatorsArray.includes(btnDisplay) && btnDisplay !== "-") {
-            btnDisplay = target;
-            calcDisplay = calcDisplay + target;
-        } else if (operatorsArray.includes(btnDisplay) && btnDisplay === "-") {
-            if (isMinusNumber === true) {
-                btnDisplay = btnDisplay + target;
-                calcDisplay = calcDisplay + target;
-                isMinusNumber = false;
-            } else {
-                btnDisplay = target;
-                calcDisplay = calcDisplay + target;
-            }
-        } else if (previousTarget === "=") {
-            btnDisplay = target;
-            calcDisplay = target;
-            totalSum = 0;
-            totalArray = [];
-        } else if (btnDisplay === "0") {
-            btnDisplay = target;
-            calcDisplay = calcDisplay.substr(0, calcDisplay.length - 1) + target;
-        } else {
-            btnDisplay = btnDisplay + target;
-            calcDisplay = calcDisplay + target;
-        }
-
-    }
-    // if statement when equals sign is pressed, to perform and show calculation
-    if (target === "=" && previousTarget !== "=") {
-
-        if (operatorsArray.includes(previousTarget)) {
-            totalArray.splice(totalArray.length - 1, 1);
-            calcDisplay = calcDisplay.substr(0, calcDisplay.length - 1);
-        }
-
-        if (!operatorsArray.includes(previousTarget)) {
-            totalArray.push(btnDisplay);
-        }
-
-        calculateTotal(totalArray);
-        btnDisplay = totalSum;
-        calcDisplay = calcDisplay + target + totalSum;
-        totalArray.push(totalSum);
-    }
-    pressedBtnDisplay.innerText = btnDisplay;
-    calculationDisplay.innerText = calcDisplay;
-    // changes the value of the previous target variable  
-    previousTarget = target;
 }
 
 
-// total sum
-let totalSum = 0;
 
-// previous button pressed
-let previousTarget = "";
+function pressNumber(target) {
 
-let totalArray = [];
+    if (operatorsArray.includes(btnDisplay) && btnDisplay !== "-") {
+        btnDisplay = target;
+        calcDisplay = calcDisplay + target;
+    } else if (operatorsArray.includes(btnDisplay) && btnDisplay === "-") {
+        if (isMinusNumber === true) {
+            btnDisplay = btnDisplay + target;
+            calcDisplay = calcDisplay + target;
+            isMinusNumber = false;
+        } else {
+            btnDisplay = target;
+            calcDisplay = calcDisplay + target;
+        }
+    } else if (previousTarget === "=") {
+        btnDisplay = target;
+        calcDisplay = target;
+        totalSum = 0;
+        totalArray = [];
+    } else if (btnDisplay === "0") {
+        btnDisplay = target;
+        calcDisplay = calcDisplay.substr(0, calcDisplay.length - 1) + target;
+    } else {
+        btnDisplay = btnDisplay + target;
+        calcDisplay = calcDisplay + target;
+    }
 
+}
+
+
+
+function pressEquals(target) {
+
+
+    if (operatorsArray.includes(previousTarget)) {
+        calcDisplay = calcDisplay.substr(0, calcDisplay.length - 1);
+    }
+
+    if (!operatorsArray.includes(previousTarget)) {
+        totalArray.push(btnDisplay);
+    }
+
+    calculateTotal(totalArray);
+    btnDisplay = totalSum;
+    calcDisplay = calcDisplay + target + totalSum;
+    totalArray.push(totalSum);
+}
 
 
 
@@ -175,8 +209,6 @@ function calculateTotal(equation) {
         }
     }
 
-    console.log(equation);
-
     // rounding numbers to 4 decimal places if required
 
     let roundNumber = Number(equation[0].toFixed(4));
@@ -192,12 +224,12 @@ function calculateTotal(equation) {
 function pressKey(event) {
 
     if (event.key === "x" || event.key === "*") {
-        btnArray[5].click();
+        btnArray[btnArray.findIndex(element => element.innerText === "x")].click();
     }
 
     if (event.key === "Enter") {
         event.preventDefault();
-        btnArray[16].click();
+        btnArray[btnArray.findIndex(element => element.innerText === "=")].click()
     }
     // for loop to find the innerText of each button to match one with event.key value
     for (let i = 0; i < btnArray.length; i++) {
@@ -212,11 +244,7 @@ function pressKey(event) {
 //function to utilise backspace as 'AC'
 function keyDown(event) {
     if (event.key === "Backspace") {
-        btnArray[0].click();
+        btnArray[btnArray.findIndex(element => element.innerText === "AC")].click()
     }
 }
 
-// event listener for any key presses
-document.addEventListener("keypress", pressKey);
-// event listener for any key presses
-document.addEventListener("keydown", keyDown);
