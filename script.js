@@ -32,7 +32,7 @@ const operatorsArray = ["x", "/", "+", "-"];
 
 // setting initial variables
 let totalSum = 0;
-let previousTarget = "";
+let previousTarget = "AC";
 let totalArray = [];
 
 
@@ -78,27 +78,50 @@ function showInput(event) {
 function pressClear(target) {
     btnDisplay = "0";
     calcDisplay = "";
-    totalSum = 0;
     totalArray = [];
 }
 
 function pressOperators(target) {
+    // if there was a sum done previously and the number will be used
     if (previousTarget === "=") {
+        totalArray.push(btnDisplay);
         btnDisplay = target;
         calcDisplay = totalSum + target;
         totalSum = 0;
         totalArray.push(btnDisplay);
+    }
+    // if you wanted to start with a minus number
+    if (calcDisplay === "") {
+        if (target === "-") {
+            btnDisplay = target;
+            calcDisplay = target;
+            isMinusNumber = true;
+        }
+        // if one operator exists immeditely before
+    } else if (operatorsArray.includes(calcDisplay.substr(calcDisplay.length - 1, 1)) &&
+        !operatorsArray.includes(calcDisplay.substr(calcDisplay.length - 2, 1))) {
+        if (target === "-") {
+            btnDisplay = target;
+            calcDisplay = calcDisplay + target;
+            isMinusNumber = true;
+        } else {
+            totalArray.pop();
+            btnDisplay = target;
+            calcDisplay = calcDisplay.substr(0, calcDisplay.length - 1) + target;
+            totalArray.push(btnDisplay)
+        }
+        // if more that one operator exists immediately before
+    } else if (operatorsArray.includes(calcDisplay.substr(calcDisplay.length - 1, 1)) &&
+        operatorsArray.includes(calcDisplay.substr(calcDisplay.length - 2, 1))) {
+        if (target !== "-") {
+            totalArray.pop();
+            btnDisplay = target;
+            calcDisplay = calcDisplay.substr(0, calcDisplay.length - 2) + target;
+            totalArray.push(btnDisplay);
+            isMinusNumber = false;
+        }
 
-    } else if (operatorsArray.includes(previousTarget) && target !== "-") {
-        totalArray.splice(totalArray.length - 1, 1);
-        btnDisplay = target;
-        calcDisplay = calcDisplay.substr(0, calcDisplay.length - 1) + target;
-        totalArray.push(btnDisplay)
-
-    } else if (operatorsArray.includes(previousTarget) && target === "-") {
-        btnDisplay = target;
-        calcDisplay = calcDisplay + target;
-        isMinusNumber = true;
+        //for numbers only
     } else {
         totalArray.push(btnDisplay);
         btnDisplay = target;
@@ -111,15 +134,22 @@ function pressOperators(target) {
 function pressDecimal(target) {
     // if statement for when decimal is pressed and the number doesnt have a decimal already
     if (pressedBtnDisplay.innerText.includes(".") === false) {
-        btnDisplay = btnDisplay + target;
-        calcDisplay = calcDisplay + target;
-    }
+        if (!operatorsArray.includes(previousTarget)) {
+            btnDisplay = btnDisplay + target;
+            calcDisplay = calcDisplay + target;
+        } else if (isMinusNumber === true) {
+            btnDisplay = btnDisplay + "0" + target;
+            calcDisplay = calcDisplay + "0" + target;
+        } else {
+            btnDisplay = "0" + target;
+            calcDisplay = "0" + target;
+        }
 
+    } 
+ 
     if (previousTarget === "=") {
         btnDisplay = target;
         calcDisplay = target;
-        totalSum = 0;
-        totalArray = [];
     }
 }
 
@@ -142,8 +172,6 @@ function pressNumber(target) {
     } else if (previousTarget === "=") {
         btnDisplay = target;
         calcDisplay = target;
-        totalSum = 0;
-        totalArray = [];
     } else if (btnDisplay === "0") {
         btnDisplay = target;
         calcDisplay = calcDisplay.substr(0, calcDisplay.length - 1) + target;
@@ -155,10 +183,7 @@ function pressNumber(target) {
 }
 
 
-
 function pressEquals(target) {
-
-
     if (operatorsArray.includes(previousTarget)) {
         calcDisplay = calcDisplay.substr(0, calcDisplay.length - 1);
     }
@@ -170,7 +195,6 @@ function pressEquals(target) {
     calculateTotal(totalArray);
     btnDisplay = totalSum;
     calcDisplay = calcDisplay + target + totalSum;
-    totalArray.push(totalSum);
 }
 
 
@@ -210,10 +234,10 @@ function calculateTotal(equation) {
     }
 
     // rounding numbers to 4 decimal places if required
-
-    let roundNumber = Number(equation[0].toFixed(4));
-    equation[0] = roundNumber;
-
+    if (equation[0].toString().length > 5) {
+        let roundNumber = Number(equation[0].toFixed(4));
+        equation[0] = roundNumber;
+    }
     // setting total sum, and emptying calculation array
     totalSum = equation.join("");
     totalArray = [];
