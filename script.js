@@ -142,50 +142,48 @@ let totalArray = [];
 
 
 //function for calculating the total
-function calculateTotal(array) {
+function calculateTotal(equation) {
+    console.log(equation);
     // returns the number or zero if calculation doesnt consist of two operands and one operator
-    if (array.length === 1) {
-        totalSum = array.join("");
+    if (equation.length === 1) {
+        totalSum = equation.join("");
         totalArray = [];
         return;
     }
 
-    if (operatorsArray.includes(array[array.length - 1])) {
-        array.pop();
+    if (operatorsArray.includes(equation[equation.length - 1])) {
+        equation.pop();
     }
     // while loops for all operators - prioritising multiple and divide
 
-    while (array.includes("x")) {
-        let pIndex = array.indexOf("x");
-        let mSum = array[pIndex - 1] * array[pIndex + 1];
-        array.splice(pIndex - 1, 3, mSum);
+    for (let i = 0; i < operatorsArray.length; i++) {
+        while (equation.includes(operatorsArray[i])) {
+            let pIndex = equation.indexOf(operatorsArray[i]);
+            let sum = 0;
+            let numLeft = Number(equation[pIndex - 1]);
+            let numRight = Number(equation[pIndex + 1]);
+            if (operatorsArray[i] === "x") {
+                sum = numLeft * numRight;
+            } else if (operatorsArray[i] === "/") {
+                sum = numLeft / numRight;
+            } else if (operatorsArray[i] === "+") {
+                sum = numLeft + numRight;
+            } else if (operatorsArray[i] === "-") {
+                sum = numLeft - numRight;
+            }
+            equation.splice(pIndex - 1, 3, sum);
+        }
     }
 
-    while (array.includes("/")) {
-        let pIndex = array.indexOf("/");
-        let mSum = array[pIndex - 1] / array[pIndex + 1];
-        array.splice(pIndex - 1, 3, mSum);
-    }
+    console.log(equation);
 
-    while (array.includes("+")) {
-        let pIndex = array.indexOf("+");
-        let mSum = Number(array[pIndex - 1]) + Number(array[pIndex + 1]);
-        array.splice(pIndex - 1, 3, mSum);
-    }
+    // rounding numbers to 4 decimal places if required
 
-    while (array.includes("-")) {
-        let pIndex = array.indexOf("-");
-        let mSum = Number(array[pIndex - 1]) - Number(array[pIndex + 1]);
-        array.splice(pIndex - 1, 3, mSum);
-    }
-
-    // rounding numvers to 4 decimal places if required
-
-    let roundNumber = Number(array[0].toFixed(4));
-    array[0] = roundNumber;
+    let roundNumber = Number(equation[0].toFixed(4));
+    equation[0] = roundNumber;
 
     // setting total sum, and emptying calculation array
-    totalSum = array.join("");
+    totalSum = equation.join("");
     totalArray = [];
 
 }
