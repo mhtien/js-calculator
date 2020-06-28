@@ -49,9 +49,14 @@ function showInput(event) {
     }
 
     // if statement for any operators pressed
-    if (operatorsArray.includes(target)) {
+    if (operatorsArray.includes(target) && target === "-") {
+        pressMinus(target);
+    }
+
+    if (operatorsArray.includes(target) && target !== "-") {
         pressOperators(target);
     }
+
 
     if (target === ".") {
         pressDecimal(target);
@@ -76,108 +81,118 @@ function showInput(event) {
 }
 
 function pressClear(target) {
-    btnDisplay = "0";
+    btnDisplay = "";
     calcDisplay = "";
     totalArray = [];
 }
 
-function pressOperators(target) {
-    // if there was a sum done previously and the number will be used
-    if (previousTarget === "=") {
+function pressMinus(target) {
+    if (previousTarget === "AC") {
+        //for AC
+        btnDisplay = target;
+        calcDisplay = target;
+        isMinusNumber = true;
+    } else if (!operatorsArray.includes(calcDisplay.slice(-2, -1)) && operatorsArray.includes(calcDisplay.slice(-1))) {
+        //for one operator immediately logged before
+        btnDisplay = target;
+        calcDisplay += target;
+        isMinusNumber = true;
+        //for two operators immediately logged before
+    } else if (operatorsArray.includes(calcDisplay.slice(-2, -1)) && operatorsArray.includes(calcDisplay.slice(-1))) {
+        btnDisplay = target;
+        calcDisplay = calcDisplay.slice(0, -2) + target;
+        isMinusNumber = false;
+        totalArray.pop();
+        totalArray.push(btnDisplay);
+    } else if (previousTarget === "=") {
         totalArray.push(btnDisplay);
         btnDisplay = target;
         calcDisplay = totalSum + target;
-        totalSum = 0;
         totalArray.push(btnDisplay);
-    }
-    // if you wanted to start with a minus number
-    if (calcDisplay === "") {
-        if (target === "-") {
-            btnDisplay = target;
-            calcDisplay = target;
-            isMinusNumber = true;
-        }
-        // if one operator exists immeditely before
-    } else if (operatorsArray.includes(calcDisplay.substr(calcDisplay.length - 1, 1)) &&
-        !operatorsArray.includes(calcDisplay.substr(calcDisplay.length - 2, 1))) {
-        if (target === "-") {
-            btnDisplay = target;
-            calcDisplay = calcDisplay + target;
-            isMinusNumber = true;
-        } else {
-            totalArray.pop();
-            btnDisplay = target;
-            calcDisplay = calcDisplay.substr(0, calcDisplay.length - 1) + target;
-            totalArray.push(btnDisplay)
-        }
-        // if more that one operator exists immediately before
-    } else if (operatorsArray.includes(calcDisplay.substr(calcDisplay.length - 1, 1)) &&
-        operatorsArray.includes(calcDisplay.substr(calcDisplay.length - 2, 1))) {
-        if (target !== "-") {
-            totalArray.pop();
-            btnDisplay = target;
-            calcDisplay = calcDisplay.substr(0, calcDisplay.length - 2) + target;
-            totalArray.push(btnDisplay);
-            isMinusNumber = false;
-        }
-
-        //for numbers only
     } else {
         totalArray.push(btnDisplay);
         btnDisplay = target;
-        calcDisplay = calcDisplay + target;
-        totalArray.push(btnDisplay)
+        calcDisplay += target;
+        totalArray.push(btnDisplay);
     }
+
 }
+
+function pressOperators(target) {
+    if (previousTarget === "AC") {
+        //do nothing
+    } else if (!operatorsArray.includes(calcDisplay.slice(-2, -1)) && operatorsArray.includes(calcDisplay.slice(-1))) {
+        //for one operator immediately logged before
+        btnDisplay = target;
+        calcDisplay = calcDisplay.slice(0, -1) + target;
+        totalArray.pop();
+        totalArray.push(btnDisplay);
+    } else if (operatorsArray.includes(calcDisplay.slice(-2, -1)) && operatorsArray.includes(calcDisplay.slice(-1))) {
+        //for two operators immediately logged before
+        btnDisplay = target;
+        calcDisplay = calcDisplay.slice(0, -2) + target;
+        isMinusNumber = false;
+        totalArray.pop();
+        totalArray.push(btnDisplay);
+    } else if (previousTarget === "=") {
+        totalArray.push(btnDisplay);
+        btnDisplay = target;
+        calcDisplay = totalSum + target;
+        totalArray.push(btnDisplay);
+    } else {
+        totalArray.push(btnDisplay);
+        btnDisplay = target;
+        calcDisplay += target;
+        totalArray.push(btnDisplay);
+    }
+
+}
+
+
 
 
 function pressDecimal(target) {
-    // if statement for when decimal is pressed and the number doesnt have a decimal already
-    if (pressedBtnDisplay.innerText.includes(".") === false) {
-        if (!operatorsArray.includes(previousTarget)) {
-            btnDisplay = btnDisplay + target;
-            calcDisplay = calcDisplay + target;
-        } else if (isMinusNumber === true) {
-            btnDisplay = btnDisplay + "0" + target;
-            calcDisplay = calcDisplay + "0" + target;
-        } else {
-            btnDisplay = "0" + target;
-            calcDisplay = "0" + target;
-        }
-
-    } 
- 
-    if (previousTarget === "=") {
-        btnDisplay = target;
-        calcDisplay = target;
+    if (previousTarget === "=" || previousTarget === "AC") {
+        //for AC and equals
+        btnDisplay = "0" + target;
+        calcDisplay = "0" + target;
+    } else if (operatorsArray.includes(previousTarget) && isMinusNumber === false) {
+        //for all operators and if isMinusNumber is false
+        btnDisplay = "0" + target;
+        calcDisplay += "0" + target;
+    } else if (isMinusNumber === true) {
+        //if minus number is true
+        btnDisplay += "0" + target;
+        calcDisplay += "0" + target;
+        isMinusNumber = false;
+    } else if (!btnDisplay.includes(".")) {
+        btnDisplay += target;
+        calcDisplay += target;
     }
 }
 
-
-
 function pressNumber(target) {
-
-    if (operatorsArray.includes(btnDisplay) && btnDisplay !== "-") {
-        btnDisplay = target;
-        calcDisplay = calcDisplay + target;
-    } else if (operatorsArray.includes(btnDisplay) && btnDisplay === "-") {
-        if (isMinusNumber === true) {
-            btnDisplay = btnDisplay + target;
-            calcDisplay = calcDisplay + target;
-            isMinusNumber = false;
-        } else {
-            btnDisplay = target;
-            calcDisplay = calcDisplay + target;
-        }
-    } else if (previousTarget === "=") {
+    if (previousTarget === "=" || previousTarget === "AC") {
+        //for AC and equals
         btnDisplay = target;
         calcDisplay = target;
-    } else if (btnDisplay === "0") {
+    } else if (operatorsArray.includes(previousTarget) && isMinusNumber === false) {
+        //for all operators if isMinusNumber is false
         btnDisplay = target;
-        calcDisplay = calcDisplay.substr(0, calcDisplay.length - 1) + target;
+        calcDisplay += target;
+    } else if (isMinusNumber === true) {
+        //if minus number is true
+        btnDisplay += target;
+        calcDisplay += target;
+        isMinusNumber = false;
+    } else if (btnDisplay === "0") {
+        //to prevent multiply zeros
+        btnDisplay = target;
+        calcDisplay = calcDisplay.slice(0, -1) + target;
     } else {
-        btnDisplay = btnDisplay + target;
-        calcDisplay = calcDisplay + target;
+        //for numbers and decimals
+        btnDisplay += target;
+        calcDisplay += target;
     }
 
 }
