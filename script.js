@@ -7,12 +7,14 @@ let btnArray = [...calculatorBtns];
 // creating eventlisteners for all buttons
 btnArray.forEach(button => {
     button.addEventListener("click", showInput);
+    button.addEventListener("click", changeButtonColors);
 });
 
 // event listener for any key presses
 document.addEventListener("keypress", pressKey);
 // event listener for any key presses
 document.addEventListener("keydown", keyDown);
+
 
 // target the pressing button display
 const pressedBtnDisplay = document.getElementById("pressed-btn");
@@ -33,7 +35,7 @@ const operatorsArray = ["x", "/", "+", "-"];
 
 
 // setting initial variables
-let totalSum = 0;
+let totalSum = 0; //variable for calculation
 let previousTarget = "AC";
 let totalArray = [];
 
@@ -58,7 +60,6 @@ function showInput(event) {
     if (operatorsArray.includes(target) && target !== "-") {
         pressOperators(target);
     }
-
 
     if (target === ".") {
         pressDecimal(target);
@@ -289,13 +290,14 @@ function pressKey(event) {
     if (event.key === "Enter") {
         event.preventDefault();
         btnArray[btnArray.findIndex(element => element.innerText === "=")].click()
+
     }
     // for loop to find the innerText of each button to match one with event.key value
     for (let i = 0; i < btnArray.length; i++) {
         // if statement to determine match, and initialise a click of the button
 
         if (btnArray[i].innerText === event.key) {
-            btnArray[i].click()
+            btnArray[i].click();
         }
     }
 }
@@ -307,3 +309,29 @@ function keyDown(event) {
     }
 }
 
+
+const randomColor = document.getElementById("randomColor");
+
+function getRandomColor() {
+    let letters = '0123456789ABCDEF';
+    let color = '#';
+    for (var i = 0; i < 6; i++) {
+      color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
+  }
+
+  const colorArray = ["#08F7FE","#09FBD3","#FE53BB","#F5D300","#FFACFC","#7122FA","#FF2281","#011FFD","#FDC7D7","#A5D8F3","#FF9472","#3B55CE","#037A90","#BDBDFD","#FFAA01"];
+
+  function changeButtonColors() {
+      let randomNumber = Math.floor(Math.random() * colorArray.length);
+      randomColor.innerHTML = `button:active {background-color:${colorArray[randomNumber]};}`
+  }
+  
+
+// function changeButtonColors() {
+//     let colorArray = []
+//     randomColor.innerHTML = `button:active {background-color:${getRandomColor()}};`
+// }
+
+changeButtonColors();
