@@ -5,9 +5,9 @@ const calculatorBtns = document.querySelectorAll("button");
 let btnArray = [...calculatorBtns];
 
 // creating eventlisteners for all buttons
-for (let i = 0; i < btnArray.length; i++) {
-    btnArray[i].addEventListener("click", showInput);
-}
+btnArray.forEach(button => {
+    button.addEventListener("click", showInput);
+});
 
 // event listener for any key presses
 document.addEventListener("keypress", pressKey);
@@ -17,6 +17,8 @@ document.addEventListener("keydown", keyDown);
 // target the pressing button display
 const pressedBtnDisplay = document.getElementById("pressed-btn");
 
+// initial value
+pressedBtnDisplay.innerText = "0";
 // variable for pressed button display
 let btnDisplay = "";
 
@@ -81,7 +83,7 @@ function showInput(event) {
 }
 
 function pressClear(target) {
-    btnDisplay = "";
+    btnDisplay = "0";
     calcDisplay = "";
     totalArray = [];
 }
@@ -199,34 +201,52 @@ function pressNumber(target) {
 
 
 function pressEquals(target) {
-    if (operatorsArray.includes(previousTarget)) {
-        calcDisplay = calcDisplay.substr(0, calcDisplay.length - 1);
+
+    if (previousTarget === "AC") {
+        //for AC 
+        // do nothing
+    } else if (operatorsArray.includes(previousTarget) && isMinusNumber === false) {
+        //for all operators
+        calcDisplay = calcDisplay.slice(0, -1);
+    } else if (isMinusNumber === true) {
+        //if minus number is true
+        calcDisplay = calcDisplay.slice(0, -2);
+        isMinusNumber = false;
+    } else if (previousTarget === ".") {
+        //to prevent decimal point without number after
+        btnDisplay = btnDisplay.slice(0, -1);
+        calcDisplay = calcDisplay.slice(0,-1);
+        totalArray.push(btnDisplay)
+    } else {
+        //for numbers
+        totalArray.push(btnDisplay)
     }
 
-    if (!operatorsArray.includes(previousTarget)) {
-        totalArray.push(btnDisplay);
-    }
-
+    if (previousTarget !== "AC") {
     calculateTotal(totalArray);
     btnDisplay = totalSum;
     calcDisplay = calcDisplay + target + totalSum;
+    isMinusNumber = false;
+    }
 }
+
 
 
 
 //function for calculating the total
 function calculateTotal(equation) {
-    console.log(equation);
+    // removes all operators after last number
+    while (operatorsArray.includes(equation[equation.length-1])) {
+        equation.pop();
+    }
+
     // returns the number or zero if calculation doesnt consist of two operands and one operator
     if (equation.length === 1) {
         totalSum = equation.join("");
         totalArray = [];
         return;
     }
-
-    if (operatorsArray.includes(equation[equation.length - 1])) {
-        equation.pop();
-    }
+    
     // while loops for all operators - prioritising multiple and divide
 
     for (let i = 0; i < operatorsArray.length; i++) {
