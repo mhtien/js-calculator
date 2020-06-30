@@ -12,10 +12,9 @@ html {
     max-width: 20rem;
     min-width: 20rem;
     margin: 0 auto;
-    border: solid black;
+    border: 0.2rem solid black;
     border-radius: 0.5rem;
 }
-
 
 /* general text alignment to h1 */
 h1 {

@@ -11,9 +11,7 @@ btnArray.forEach(button => {
 });
 
 // event listener for any key presses
-document.addEventListener("keypress", pressKey);
-// event listener for any key presses
-document.addEventListener("keydown", keyDown);
+document.addEventListener("keydown", pressKey);
 
 
 // target the pressing button display
@@ -216,7 +214,7 @@ function pressEquals(target) {
     } else if (previousTarget === ".") {
         //to prevent decimal point without number after
         btnDisplay = btnDisplay.slice(0, -1);
-        calcDisplay = calcDisplay.slice(0,-1);
+        calcDisplay = calcDisplay.slice(0, -1);
         totalArray.push(btnDisplay)
     } else {
         //for numbers
@@ -224,10 +222,10 @@ function pressEquals(target) {
     }
 
     if (previousTarget !== "AC") {
-    calculateTotal(totalArray);
-    btnDisplay = totalSum;
-    calcDisplay = calcDisplay + target + totalSum;
-    isMinusNumber = false;
+        calculateTotal(totalArray);
+        btnDisplay = totalSum;
+        calcDisplay = calcDisplay + target + totalSum;
+        isMinusNumber = false;
     }
 }
 
@@ -237,7 +235,7 @@ function pressEquals(target) {
 //function for calculating the total
 function calculateTotal(equation) {
     // removes all operators after last number
-    while (operatorsArray.includes(equation[equation.length-1])) {
+    while (operatorsArray.includes(equation[equation.length - 1])) {
         equation.pop();
     }
 
@@ -247,7 +245,7 @@ function calculateTotal(equation) {
         totalArray = [];
         return;
     }
-    
+
     // while loops for all operators - prioritising multiple and divide
 
     for (let i = 0; i < operatorsArray.length; i++) {
@@ -282,56 +280,45 @@ function calculateTotal(equation) {
 
 // key press function to initialise a click of the same button
 function pressKey(event) {
-
-    if (event.key === "x" || event.key === "*") {
-        btnArray[btnArray.findIndex(element => element.innerText === "x")].click();
-    }
-
-    if (event.key === "Enter") {
+    let targetBtnIndex;
+    if (event.key === "*") {
+        targetBtnIndex = btnArray.findIndex(element => element.innerText === "x");
+    } else if (event.key === "Enter") {
         event.preventDefault();
-        btnArray[btnArray.findIndex(element => element.innerText === "=")].click()
-
+        targetBtnIndex = btnArray.findIndex(element => element.innerText === "=");
+    } else if (event.key === "Backspace") {
+        targetBtnIndex = btnArray.findIndex(element => element.innerText === "AC");
+    } else {
+        // targets al other buttons
+        targetBtnIndex = btnArray.findIndex(element => element.innerText === event.key);
     }
-    // for loop to find the innerText of each button to match one with event.key value
-    for (let i = 0; i < btnArray.length; i++) {
-        // if statement to determine match, and initialise a click of the button
 
-        if (btnArray[i].innerText === event.key) {
-            btnArray[i].click();
-        }
+    const targetBtn = btnArray[targetBtnIndex];
+
+    // ignore none calculator buttons
+    if (!targetBtn) {
+        return
     }
+
+    // key press calls associated click function
+    targetBtn.click();
+
+    //adds class of random color to targetted button and removes after 0.1s
+    targetBtn.classList.add("active");
+    setTimeout(function () {
+        targetBtn.classList.remove("active");
+    }, 100)
+
+
 }
 
-//function to utilise backspace as 'AC'
-function keyDown(event) {
-    if (event.key === "Backspace") {
-        btnArray[btnArray.findIndex(element => element.innerText === "AC")].click()
-    }
+const colorArray = ["#08F7FE", "#09FBD3", "#FE53BB", "#F5D300", "#FFACFC", "#7122FA", "#FF2281", "#011FFD", "#FDC7D7", "#A5D8F3", "#FF9472", "#3B55CE", "#037A90", "#BDBDFD", "#FFAA01"];
+
+function changeButtonColors() {
+    let randomNumber = Math.floor(Math.random() * colorArray.length);
+    randomColor.innerHTML = `button:active, button.active {background-color:${colorArray[randomNumber]};}`
+
 }
 
-
-const randomColor = document.getElementById("randomColor");
-
-function getRandomColor() {
-    let letters = '0123456789ABCDEF';
-    let color = '#';
-    for (var i = 0; i < 6; i++) {
-      color += letters[Math.floor(Math.random() * 16)];
-    }
-    return color;
-  }
-
-  const colorArray = ["#08F7FE","#09FBD3","#FE53BB","#F5D300","#FFACFC","#7122FA","#FF2281","#011FFD","#FDC7D7","#A5D8F3","#FF9472","#3B55CE","#037A90","#BDBDFD","#FFAA01"];
-
-  function changeButtonColors() {
-      let randomNumber = Math.floor(Math.random() * colorArray.length);
-      randomColor.innerHTML = `button:active {background-color:${colorArray[randomNumber]};}`
-  }
-  
-
-// function changeButtonColors() {
-//     let colorArray = []
-//     randomColor.innerHTML = `button:active {background-color:${getRandomColor()}};`
-// }
-
+//call function to set initial colour
 changeButtonColors();
