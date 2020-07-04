@@ -1,7 +1,7 @@
 /* border for visual aid */
-/* * {
+* {
     border: 1px green solid;
-} */
+}
 
 html {
     font-family: Arial, Helvetica, sans-serif;
@@ -42,11 +42,19 @@ html {
     padding: 0.5rem 0.2rem;
 }
 
+/* fix wdith and font colour for both displays */
+#calculation-display,
+#pressed-btn-display {
+    color: white;
+    box-sizing: border-box;
+    width: 100%;
+
+}
+
 /* for the upper display */
 #calculation-display {
     height: 1rem;
     font-size: 1rem;
-    color: white;
     margin-bottom: 0.2rem;
 }
 
@@ -54,7 +62,6 @@ html {
 #pressed-btn-display {
     height: 2rem;
     font-size: 2rem;
-    color: white;
 }
 
 /* general text alignment to h1 */

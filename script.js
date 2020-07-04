@@ -33,6 +33,13 @@ let isMinusNumber = false; // determines is the number input is going to be a ne
 
 //function for showing both the 'button' display and the calculation display, as well as pushing the operators and operands into the array for calculation
 function showInput(event) {
+    // limits character
+    if (calcDisplay.length > 18 || btnDisplay.length > 10) {
+        pressedBtnDisplay.innerText = "Exceeded Limit!";
+        pressClear();
+        return;
+    }
+
     // variable for the button pressed
     let target = event.target.innerText;
 
