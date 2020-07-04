@@ -5,69 +5,22 @@
 
 html {
     font-family: Arial, Helvetica, sans-serif;
-
 }
 
+/* calculator size and style */
 #calculator {
     max-width: 20rem;
     min-width: 20rem;
     margin: 0 auto;
     border: 0.2rem solid black;
     border-radius: 0.5rem;
+    background-color: black;
 }
 
-/* general text alignment to h1 */
-h1 {
-    text-align: center;
-}
-
-/* display container */
-#display {
-    background-color: darkgray;
-    width: 100%;
-    box-sizing: border-box;
-    border: 0.2rem solid black;
-    text-align: right;
-    padding: 0.5rem 0.2rem;
-}
-
-/* buttons general positioning; */
-button {
-    display: inline-block;
-    height: 5rem;
-    width: 5rem;
-    font-size: 1.5rem;
-    box-sizing: border-box;
-    border: 0.2rem solid black;
-    background-color: white;
-}
-
-button:active {
-    color: white;
-}
-
-button:focus {
-    outline: none;
-}
-
+/* font size set to 0 to remove div margin */
 #calculator-buttons {
     font-size: 0;
 }
-
-
-
-#pressed-btn {
-    height: 2rem;
-    font-size: 2rem;
-    color: white;
-}
-
-#calculation {
-    height: 1rem;
-    font-size: 1rem;
-    color: white;
-}
-
 
 /* clear button width */
 #clear {
@@ -78,3 +31,57 @@ button:focus {
 #equals {
     width: 50%;
 }
+
+/* displays container for both calculation and pressed button*/
+#display {
+    background-color: darkgray;
+    width: 100%;
+    box-sizing: border-box;
+    border: 0.2rem solid black;
+    text-align: right;
+    padding: 0.5rem 0.2rem;
+}
+
+/* for the upper display */
+#calculation-display {
+    height: 1rem;
+    font-size: 1rem;
+    color: white;
+    margin-bottom: 0.2rem;
+}
+
+/* for the lower display */
+#pressed-btn-display {
+    height: 2rem;
+    font-size: 2rem;
+    color: white;
+}
+
+/* general text alignment to h1 */
+h1 {
+    text-align: center;
+}
+
+/* buttons general positioning */
+button {
+    display: inline-block;
+    height: 5rem;
+    width: 5rem;
+    font-size: 1.5rem;
+    box-sizing: border-box;
+    border: 0.2rem solid black;
+    background-color: white;
+}
+
+/* colour of font of keys turns to white when clicked or when key press events happen*/
+button:active,  /* for clicks*/
+button.active { /* for key events */
+    color: white;
+}
+
+
+/* removes default focus */
+button:focus {
+    outline: none;
+}
+

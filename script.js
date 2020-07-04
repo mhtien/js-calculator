@@ -1,8 +1,5 @@
 // targetting all the buttons
-const calculatorBtns = document.querySelectorAll("button");
-
-// all buttons copied into array
-let btnArray = [...calculatorBtns];
+const btnArray = [...document.querySelectorAll("button")];
 
 // creating eventlisteners for all buttons
 btnArray.forEach(button => {
@@ -13,21 +10,17 @@ btnArray.forEach(button => {
 // event listener for any key presses
 document.addEventListener("keydown", pressKey);
 
-
 // target the pressing button display
-const pressedBtnDisplay = document.getElementById("pressed-btn");
-
+const pressedBtnDisplay = document.getElementById("pressed-btn-display");
 // initial value
 pressedBtnDisplay.innerText = "0";
 // variable for pressed button display
 let btnDisplay = "";
 
 // target for calculation display container
-const calculationDisplay = document.getElementById("calculation");
-
+const calculationDisplay = document.getElementById("calculation-display");
 // variable for showing calculation
 let calcDisplay = "";
-
 // array for operators prioritisng multiply and divide
 const operatorsArray = ["x", "/", "+", "-"];
 
@@ -35,12 +28,10 @@ const operatorsArray = ["x", "/", "+", "-"];
 // setting initial variables
 let totalSum = 0; //variable for calculation
 let previousTarget = "AC";
-let totalArray = [];
+let totalArray = []; // array for pushing operands and operators in
+let isMinusNumber = false; // determines is the number input is going to be a negative number
 
-
-let isMinusNumber = false;
-
-//function for showing both the 'button' display and the calculation display
+//function for showing both the 'button' display and the calculation display, as well as pushing the operators and operands into the array for calculation
 function showInput(event) {
     // variable for the button pressed
     let target = event.target.innerText;
@@ -50,15 +41,12 @@ function showInput(event) {
         pressClear(target);
     }
 
-    // if statement for any operators pressed
-    if (operatorsArray.includes(target) && target === "-") {
-        pressMinus(target);
-    }
-
-    if (operatorsArray.includes(target) && target !== "-") {
+    // if statement for any operators 
+    if (operatorsArray.includes(target)) {
         pressOperators(target);
     }
 
+    //if statement for decimal points
     if (target === ".") {
         pressDecimal(target);
     }
@@ -73,7 +61,7 @@ function showInput(event) {
         pressEquals(target);
     }
 
-    //displaying both buttons pressed, and calculation
+    //displaying both buttons pressed and calculation display
     pressedBtnDisplay.innerText = btnDisplay;
     calculationDisplay.innerText = calcDisplay;
 
@@ -81,77 +69,51 @@ function showInput(event) {
     previousTarget = target;
 }
 
+// function for "AC"
 function pressClear(target) {
     btnDisplay = "0";
     calcDisplay = "";
     totalArray = [];
 }
 
-function pressMinus(target) {
-    if (previousTarget === "AC") {
+// function for "-"
+
+function pressOperators(target) {
+    if (previousTarget === "AC" && target === "-") {
         //for AC
         btnDisplay = target;
         calcDisplay = target;
-        isMinusNumber = true;
-    } else if (!operatorsArray.includes(calcDisplay.slice(-2, -1)) && operatorsArray.includes(calcDisplay.slice(-1))) {
-        //for one operator immediately logged before
+        isMinusNumber = true; // as there are no numbers infront variable becomes true        
+    } else if (target === "-" && !operatorsArray.includes(calcDisplay.slice(-2, -1)) && operatorsArray.includes(calcDisplay.slice(-1))) {
+        // for minus operator when there is already an operator immediately logged before, and a number logged second to last
         btnDisplay = target;
-        calcDisplay += target;
-        isMinusNumber = true;
-        //for two operators immediately logged before
-    } else if (operatorsArray.includes(calcDisplay.slice(-2, -1)) && operatorsArray.includes(calcDisplay.slice(-1))) {
-        btnDisplay = target;
-        calcDisplay = calcDisplay.slice(0, -2) + target;
-        isMinusNumber = false;
-        totalArray.pop();
-        totalArray.push(btnDisplay);
-    } else if (previousTarget === "=") {
-        totalArray.push(btnDisplay);
-        btnDisplay = target;
-        calcDisplay = totalSum + target;
-        totalArray.push(btnDisplay);
-    } else {
-        totalArray.push(btnDisplay);
-        btnDisplay = target;
-        calcDisplay += target;
-        totalArray.push(btnDisplay);
-    }
-
-}
-
-function pressOperators(target) {
-    if (previousTarget === "AC") {
-        //do nothing
-    } else if (!operatorsArray.includes(calcDisplay.slice(-2, -1)) && operatorsArray.includes(calcDisplay.slice(-1))) {
-        //for one operator immediately logged before
+        calcDisplay += target; // target added to calculation as assumes a minus number is going to be put in
+        isMinusNumber = true; // variable is true as there is already an operator right before
+    } else if (target !== "-" && !operatorsArray.includes(calcDisplay.slice(-2, -1)) && operatorsArray.includes(calcDisplay.slice(-1))) {
+        // for all other operators when there is already an operator immediately logged before, and a number logged second to last
         btnDisplay = target;
         calcDisplay = calcDisplay.slice(0, -1) + target;
-        totalArray.pop();
-        totalArray.push(btnDisplay);
+        totalArray.splice(-1, 1, btnDisplay); //removed previous operator and replaces with current
     } else if (operatorsArray.includes(calcDisplay.slice(-2, -1)) && operatorsArray.includes(calcDisplay.slice(-1))) {
-        //for two operators immediately logged before
+        //for two operators immediately logged before i.e. assumes most cases that minus number variable is true, deletes both operator and replaces with one new one
         btnDisplay = target;
         calcDisplay = calcDisplay.slice(0, -2) + target;
         isMinusNumber = false;
-        totalArray.pop();
-        totalArray.push(btnDisplay);
+        totalArray.splice(-1, 1, btnDisplay); //removed previous operator and replaces with current
     } else if (previousTarget === "=") {
-        totalArray.push(btnDisplay);
+        totalArray.push(btnDisplay); // pushes the number into the calculation array
         btnDisplay = target;
         calcDisplay = totalSum + target;
-        totalArray.push(btnDisplay);
+        totalArray.push(btnDisplay); // pushes the operator into the calculation array
     } else {
-        totalArray.push(btnDisplay);
+        totalArray.push(btnDisplay); // pushes the number into the calculation array
         btnDisplay = target;
         calcDisplay += target;
-        totalArray.push(btnDisplay);
+        totalArray.push(btnDisplay); // pushes the operator into the calculation array
     }
-
 }
 
-
-
-
+// function for decimal point
 function pressDecimal(target) {
     if (previousTarget === "=" || previousTarget === "AC") {
         //for AC and equals
@@ -172,6 +134,7 @@ function pressDecimal(target) {
     }
 }
 
+// function for numbers 
 function pressNumber(target) {
     if (previousTarget === "=" || previousTarget === "AC") {
         //for AC and equals
@@ -198,7 +161,7 @@ function pressNumber(target) {
 
 }
 
-
+// function for equals
 function pressEquals(target) {
 
     if (previousTarget === "AC") {
@@ -230,8 +193,6 @@ function pressEquals(target) {
 }
 
 
-
-
 //function for calculating the total
 function calculateTotal(equation) {
     // removes all operators after last number
@@ -247,7 +208,6 @@ function calculateTotal(equation) {
     }
 
     // while loops for all operators - prioritising multiple and divide
-
     for (let i = 0; i < operatorsArray.length; i++) {
         while (equation.includes(operatorsArray[i])) {
             let pIndex = equation.indexOf(operatorsArray[i]);
@@ -275,25 +235,26 @@ function calculateTotal(equation) {
     // setting total sum, and emptying calculation array
     totalSum = equation.join("");
     totalArray = [];
-
 }
 
 // key press function to initialise a click of the same button
 function pressKey(event) {
-    let targetBtnIndex;
+
+    let targetBtnText;
     if (event.key === "*") {
-        targetBtnIndex = btnArray.findIndex(element => element.innerText === "x");
+        targetBtnText = "x";
     } else if (event.key === "Enter") {
-        event.preventDefault();
-        targetBtnIndex = btnArray.findIndex(element => element.innerText === "=");
+        targetBtnText= "=";
     } else if (event.key === "Backspace") {
-        targetBtnIndex = btnArray.findIndex(element => element.innerText === "AC");
+        targetBtnText= "AC";
     } else {
         // targets al other buttons
-        targetBtnIndex = btnArray.findIndex(element => element.innerText === event.key);
+        targetBtnText = event.key;
     }
+    console.log(event.key);
+    console.log(targetBtnText);
 
-    const targetBtn = btnArray[targetBtnIndex];
+    const targetBtn = btnArray.find(element => element.innerText === targetBtnText);
 
     // ignore none calculator buttons
     if (!targetBtn) {
@@ -309,15 +270,15 @@ function pressKey(event) {
         targetBtn.classList.remove("active");
     }, 100)
 
-
 }
 
+// colour array for when buttons are pressed
 const colorArray = ["#08F7FE", "#09FBD3", "#FE53BB", "#F5D300", "#FFACFC", "#7122FA", "#FF2281", "#011FFD", "#FDC7D7", "#A5D8F3", "#FF9472", "#3B55CE", "#037A90", "#BDBDFD", "#FFAA01"];
 
+// function for when any buttons are pressed to randomise background colour of keys/
 function changeButtonColors() {
     let randomNumber = Math.floor(Math.random() * colorArray.length);
     randomColor.innerHTML = `button:active, button.active {background-color:${colorArray[randomNumber]};}`
-
 }
 
 //call function to set initial colour
