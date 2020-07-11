@@ -220,18 +220,19 @@ function calculateTotal(equation) {
 
     // while loops for all operators - prioritising multiple and divide
     for (let i = 0; i < operatorsArray.length; i++) {
-        while (equation.includes(operatorsArray[i])) {
-            let pIndex = equation.indexOf(operatorsArray[i]);
+        const operator = operatorsArray[i];
+        while (equation.includes(operator)) {
+            let pIndex = equation.indexOf(operator);
             let sum = 0;
             let numLeft = Number(equation[pIndex - 1]);
             let numRight = Number(equation[pIndex + 1]);
-            if (operatorsArray[i] === "x") {
+            if (operator === "x") {
                 sum = numLeft * numRight;
-            } else if (operatorsArray[i] === "/") {
+            } else if (operator === "/") {
                 sum = numLeft / numRight;
-            } else if (operatorsArray[i] === "+") {
+            } else if (operator === "+") {
                 sum = numLeft + numRight;
-            } else if (operatorsArray[i] === "-") {
+            } else if (operator === "-") {
                 sum = numLeft - numRight;
             }
             equation.splice(pIndex - 1, 3, sum);
