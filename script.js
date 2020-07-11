@@ -86,22 +86,26 @@ function pressClear(target) {
 // function for "-"
 
 function pressOperators(target) {
+    const numSecondLast = !operatorsArray.includes(calcDisplay.slice(-2, -1));
+    const operatorLast = operatorsArray.includes(calcDisplay.slice(-1));
+    const twoOperatorsLast = operatorsArray.includes(calcDisplay.slice(-2, -1));
+
     if (previousTarget === "AC" && target === "-") {
         //for AC
         btnDisplay = target;
         calcDisplay = target;
         isMinusNumber = true; // as there are no numbers infront variable becomes true        
-    } else if (target === "-" && !operatorsArray.includes(calcDisplay.slice(-2, -1)) && operatorsArray.includes(calcDisplay.slice(-1))) {
+    } else if (target === "-" && numSecondLast && operatorLast) {
         // for minus operator when there is already an operator immediately logged before, and a number logged second to last
         btnDisplay = target;
         calcDisplay += target; // target added to calculation as assumes a minus number is going to be put in
         isMinusNumber = true; // variable is true as there is already an operator right before
-    } else if (target !== "-" && !operatorsArray.includes(calcDisplay.slice(-2, -1)) && operatorsArray.includes(calcDisplay.slice(-1))) {
+    } else if (target !== "-" && numSecondLast && operatorLast) {
         // for all other operators when there is already an operator immediately logged before, and a number logged second to last
         btnDisplay = target;
         calcDisplay = calcDisplay.slice(0, -1) + target;
         totalArray.splice(-1, 1, btnDisplay); //removed previous operator and replaces with current
-    } else if (operatorsArray.includes(calcDisplay.slice(-2, -1)) && operatorsArray.includes(calcDisplay.slice(-1))) {
+    } else if (twoOperatorsLast && operatorLast) {
         //for two operators immediately logged before i.e. assumes most cases that minus number variable is true, deletes both operator and replaces with one new one
         btnDisplay = target;
         calcDisplay = calcDisplay.slice(0, -2) + target;
@@ -251,15 +255,13 @@ function pressKey(event) {
     if (event.key === "*") {
         targetBtnText = "x";
     } else if (event.key === "Enter") {
-        targetBtnText= "=";
+        targetBtnText = "=";
     } else if (event.key === "Backspace") {
-        targetBtnText= "AC";
+        targetBtnText = "AC";
     } else {
         // targets al other buttons
         targetBtnText = event.key;
     }
-    console.log(event.key);
-    console.log(targetBtnText);
 
     const targetBtn = btnArray.find(element => element.innerText === targetBtnText);
 
@@ -280,22 +282,21 @@ function pressKey(event) {
 }
 
 // colour array for when buttons are pressed
-const colorArray = ["rgb(8, 247, 254)", "rgb(9, 251, 211)", "rgb(254, 83, 187)", "rgb(245, 211, 0)", 
-"rgb(255, 172, 252)", "rgb(255, 34, 129)", "rgb(253, 199, 215)", "rgb(165, 216, 243)", "rgb(255, 148, 114)", 
-"rgb(59, 85, 206)", "rgb(3, 122, 144)", "rgb(189, 189, 253)", "rgb(255, 170, 1)"];
+const colorArray = ["rgb(8, 247, 254)", "rgb(9, 251, 211)", "rgb(254, 83, 187)", "rgb(245, 211, 0)",
+    "rgb(255, 172, 252)", "rgb(255, 34, 129)", "rgb(253, 199, 215)", "rgb(165, 216, 243)", "rgb(255, 148, 114)",
+    "rgb(59, 85, 206)", "rgb(3, 122, 144)", "rgb(189, 189, 253)", "rgb(255, 170, 1)"];
 
 // function for when any buttons are pressed to randomise background colour of keys, also includes the focus style to be 50% opacity of hidden colour
+
 function changeButtonColors() {
     let randomNumber = Math.floor(Math.random() * colorArray.length);
     let randomColor = colorArray[randomNumber];
-    let randomColorHalfOpacity = `rgba${randomColor.slice(3,-1)}, 0.5)`;
     randomColorBtn.innerHTML = `
     button:active, button.active {
         background-color:${randomColor};
     }
     button:focus {
         outline: solid ${randomColor};
-        background-color: ${randomColorHalfOpacity}; 
     }`
 }
 
