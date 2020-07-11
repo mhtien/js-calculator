@@ -9,7 +9,6 @@ html {
     margin: 0 auto;
     border: 0.2rem solid black;
     border-radius: 0.5rem;
-    background-color: black;
 }
 
 /* font size set to 0 to remove div margin */
@@ -82,8 +81,9 @@ button.active { /* for key events */
 }
 
 
-/* removes default focus */
+/* allows focus outline to not be covered by other elements */
 button:focus {
-    outline: none;
+    position: relative;
+
 }
 

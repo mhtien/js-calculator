@@ -280,12 +280,23 @@ function pressKey(event) {
 }
 
 // colour array for when buttons are pressed
-const colorArray = ["#08F7FE", "#09FBD3", "#FE53BB", "#F5D300", "#FFACFC", "#7122FA", "#FF2281", "#011FFD", "#FDC7D7", "#A5D8F3", "#FF9472", "#3B55CE", "#037A90", "#BDBDFD", "#FFAA01"];
+const colorArray = ["rgb(8, 247, 254)", "rgb(9, 251, 211)", "rgb(254, 83, 187)", "rgb(245, 211, 0)", 
+"rgb(255, 172, 252)", "rgb(255, 34, 129)", "rgb(253, 199, 215)", "rgb(165, 216, 243)", "rgb(255, 148, 114)", 
+"rgb(59, 85, 206)", "rgb(3, 122, 144)", "rgb(189, 189, 253)", "rgb(255, 170, 1)"];
 
-// function for when any buttons are pressed to randomise background colour of keys/
+// function for when any buttons are pressed to randomise background colour of keys, also includes the focus style to be 50% opacity of hidden colour
 function changeButtonColors() {
     let randomNumber = Math.floor(Math.random() * colorArray.length);
-    randomColor.innerHTML = `button:active, button.active {background-color:${colorArray[randomNumber]};}`
+    let randomColor = colorArray[randomNumber];
+    let randomColorHalfOpacity = `rgba${randomColor.slice(3,-1)}, 0.5)`;
+    randomColorBtn.innerHTML = `
+    button:active, button.active {
+        background-color:${randomColor};
+    }
+    button:focus {
+        outline: solid ${randomColor};
+        background-color: ${randomColorHalfOpacity}; 
+    }`
 }
 
 //call function to set initial colour
