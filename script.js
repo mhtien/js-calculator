@@ -289,17 +289,13 @@ const colorArray = ["rgb(8, 247, 254)", "rgb(9, 251, 211)", "rgb(254, 83, 187)",
 
 // function for when any buttons are pressed to randomise background colour of keys, also includes the focus style to be 50% opacity of hidden colour
 
-function changeButtonColors() {
+function changeButtonColors(event) {
     let randomNumber = Math.floor(Math.random() * colorArray.length);
-    let randomColor = colorArray[randomNumber];
-    randomColorBtn.innerHTML = `
-    button:active, button.active {
-        background-color:${randomColor};
-    }
-    button:focus {
-        outline: solid ${randomColor};
-    }`
+    event.target.style.setProperty("--random-color", colorArray[randomNumber])
 }
 
-//call function to set initial colour
-changeButtonColors();
+// initial colours set
+btnArray.forEach(button => {
+    let randomNumber = Math.floor(Math.random() * colorArray.length);
+    button.style.setProperty("--random-color", colorArray[randomNumber])
+})

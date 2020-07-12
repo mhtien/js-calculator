@@ -75,15 +75,17 @@ button {
     background-color: white;
 }
 
-/* colour of font of keys turns to white when clicked or when key press events happen*/
+/* colour of font of keys turns to white, and background colour appears when clicked or when key press events happen*/
 button:active,  /* for clicks*/
 button.active { /* for key events */
     color: white;
+    background-color: var(--random-color, white);
+
 }
 
-/* allows focus outline to not be covered by other elements */
+/* allows focus outline to not be covered by other elements and changes outline to random colour*/
 button:focus {
     position: relative;
-
+    outline: solid var(--random-color, white);
 }
 
